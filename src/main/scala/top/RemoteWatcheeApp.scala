@@ -5,9 +5,7 @@ import java.util.Collections
 
 import akka.actor.ProviderSelection
 import akka.actor.typed.scaladsl.Behaviors
-import akka.actor.typed.scaladsl.adapter._
 import akka.actor.typed.{ActorRefResolver, ActorSystem, Behavior}
-import akka.serialization.Serialization
 import akka.util.Timeout
 
 import scala.concurrent.Await

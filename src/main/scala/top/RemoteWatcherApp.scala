@@ -4,9 +4,7 @@ import java.nio.file.{Files, Paths}
 
 import akka.actor.ProviderSelection
 import akka.actor.typed.scaladsl.Behaviors
-import akka.actor.typed.scaladsl.adapter._
-import akka.actor.typed.{ActorRef, ActorRefResolver, ActorSystem, Behavior, Terminated}
-import akka.serialization.SerializationExtension
+import akka.actor.typed._
 import akka.util.Timeout
 
 import scala.concurrent.Await
