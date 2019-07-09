@@ -6,7 +6,7 @@ import java.util.Collections
 import akka.actor.ProviderSelection
 import akka.actor.typed.scaladsl.Behaviors
 import akka.actor.typed.scaladsl.adapter._
-import akka.actor.typed.{ActorSystem, Behavior}
+import akka.actor.typed.{ActorRefResolver, ActorSystem, Behavior}
 import akka.serialization.Serialization
 import akka.util.Timeout
 
@@ -28,7 +28,8 @@ object RemoteWatcheeApp {
     val watcheeSystem = ActorSystem(Behaviors.empty[Any], "watcheeSystem", Common.setup(2552, ProviderSelection.Remote))
 
     val watcheeRef = Await.result(watcheeSystem.systemActorOf(watcheeBeh, "watchee"), 5.seconds)
+    val refString  = ActorRefResolver(watcheeSystem).toSerializationFormat(watcheeRef)
 
-    Files.write(Paths.get("ref.txt"), Collections.singletonList(Serialization.serializedActorPath(watcheeRef.toUntyped)))
+    Files.write(Paths.get("ref.txt"), Collections.singletonList(refString))
   }
 }

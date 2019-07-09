@@ -5,7 +5,7 @@ import java.nio.file.{Files, Paths}
 import akka.actor.ProviderSelection
 import akka.actor.typed.scaladsl.Behaviors
 import akka.actor.typed.scaladsl.adapter._
-import akka.actor.typed.{ActorRef, ActorSystem, Behavior, Terminated}
+import akka.actor.typed.{ActorRef, ActorRefResolver, ActorSystem, Behavior, Terminated}
 import akka.serialization.SerializationExtension
 import akka.util.Timeout
 
@@ -31,9 +31,8 @@ object RemoteWatcherApp {
 
     val watcherSystem = ActorSystem(Behaviors.empty[Any], "watcherSystem", Common.setup(4567, ProviderSelection.Remote))
 
-    val watcheeRef = SerializationExtension(watcherSystem.toUntyped).system.provider.resolveActorRef(
-      Files.readAllLines(Paths.get("ref.txt")).get(0)
-    )
+    val refString  = Files.readAllLines(Paths.get("ref.txt")).get(0)
+    val watcheeRef = ActorRefResolver(watcherSystem).resolveActorRef(refString)
 
     Await.result(watcherSystem.systemActorOf(watcherBeh(watcheeRef), "watcher"), 5.seconds)
   }
