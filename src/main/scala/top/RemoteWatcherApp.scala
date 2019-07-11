@@ -2,10 +2,10 @@ package top
 
 import java.nio.file.{Files, Paths}
 
-import akka.actor.ProviderSelection
-import akka.actor.typed.scaladsl.Behaviors
 import akka.actor.typed._
+import akka.actor.typed.scaladsl.Behaviors
 import akka.util.Timeout
+import com.typesafe.config.ConfigFactory
 
 import scala.concurrent.Await
 import scala.concurrent.duration.DurationLong
@@ -27,7 +27,11 @@ object RemoteWatcherApp {
 
     implicit val timeout: Timeout = Timeout(5.seconds)
 
-    val watcherSystem = ActorSystem(Behaviors.empty[Any], "watcherSystem", Common.setup(4567, ProviderSelection.Remote))
+    val watcherSystem = ActorSystem(
+      Behaviors.empty[Any],
+      "WatcherSystem",
+      ConfigFactory.load().getConfig("watcher")
+    )
 
     val refString  = Files.readAllLines(Paths.get("ref.txt")).get(0)
     val watcheeRef = ActorRefResolver(watcherSystem).resolveActorRef(refString)

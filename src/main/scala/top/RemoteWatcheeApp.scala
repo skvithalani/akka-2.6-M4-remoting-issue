@@ -3,10 +3,10 @@ package top
 import java.nio.file.{Files, Paths}
 import java.util.Collections
 
-import akka.actor.ProviderSelection
 import akka.actor.typed.scaladsl.Behaviors
 import akka.actor.typed.{ActorRefResolver, ActorSystem, Behavior}
 import akka.util.Timeout
+import com.typesafe.config.ConfigFactory
 
 import scala.concurrent.Await
 import scala.concurrent.duration.DurationLong
@@ -17,13 +17,17 @@ object RemoteWatcheeApp {
 
     val watcheeBeh: Behavior[Any] = Behaviors.receiveMessage[Any] {
       case "stop" =>
-        println("****************")
+        println("*******Stopped*********")
         Behaviors.stopped
     }
 
     implicit val timeout: Timeout = Timeout(5.seconds)
 
-    val watcheeSystem = ActorSystem(Behaviors.empty[Any], "watcheeSystem", Common.setup(2552, ProviderSelection.Remote))
+    val watcheeSystem = ActorSystem(
+      Behaviors.empty[Any],
+      "WatcheeSystem",
+      ConfigFactory.load().getConfig("watchee")
+    )
 
     val watcheeRef = Await.result(watcheeSystem.systemActorOf(watcheeBeh, "watchee"), 5.seconds)
     val refString  = ActorRefResolver(watcheeSystem).toSerializationFormat(watcheeRef)
