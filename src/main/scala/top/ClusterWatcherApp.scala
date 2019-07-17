@@ -10,7 +10,7 @@ import com.typesafe.config.ConfigFactory
 import scala.concurrent.Await
 import scala.concurrent.duration.DurationLong
 
-object RemoteWatcherApp {
+object ClusterWatcherApp {
 
   def main(args: Array[String]): Unit = {
 
